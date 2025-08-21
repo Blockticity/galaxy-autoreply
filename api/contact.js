@@ -24,6 +24,8 @@ export default async function handler(req, res) {
       });
     }
 
+    console.log('Attempting to send auto-reply to:', email);
+    
     // Send alien auto-reply
     const autoReplyResult = await resend.emails.send({
       from: 'onboarding@resend.dev',
@@ -61,6 +63,8 @@ export default async function handler(req, res) {
         </div>
       `,
     });
+    
+    console.log('Auto-reply result:', autoReplyResult);
 
     // Send notification to you (optional)
     const notificationResult = await resend.emails.send({
@@ -85,9 +89,10 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Email sending failed:', error);
+    console.error('Error details:', JSON.stringify(error, null, 2));
     return res.status(500).json({ 
       error: 'Transmission failed. Please try again.',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details: error.message || 'Unknown error'
     });
   }
 }
