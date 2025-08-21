@@ -14,17 +14,23 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  console.log('Handler started, method:', req.method);
+  console.log('Request body:', req.body);
+  console.log('Has Resend API key:', !!process.env.RESEND_API_KEY);
+
   try {
     const { email, name, message } = req.body;
 
     // Validate required fields
     if (!email || !name || !message) {
+      console.log('Missing fields:', { email: !!email, name: !!name, message: !!message });
       return res.status(400).json({ 
         error: 'Missing required fields: email, name, message' 
       });
     }
 
     console.log('Attempting to send auto-reply to:', email);
+    console.log('Resend instance created successfully');
     
     // Send alien auto-reply
     const autoReplyResult = await resend.emails.send({
