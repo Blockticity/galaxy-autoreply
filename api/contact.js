@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
     // Send alien auto-reply
     const autoReplyResult = await resend.emails.send({
-      from: 'alien@galaxy.nyc',
+      from: 'onboarding@resend.dev',
       to: email,
       subject: '👽 Transmission Received - [CLASSIFIED]',
       html: `
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
 
     // Send notification to you (optional)
     const notificationResult = await resend.emails.send({
-      from: 'alien@galaxy.nyc',
+      from: 'onboarding@resend.dev',
       to: 'alien@galaxy.nyc', // or your preferred notification email
       subject: `New Contact: ${name}`,
       html: `
