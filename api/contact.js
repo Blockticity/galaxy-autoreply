@@ -32,11 +32,13 @@ export default async function handler(req, res) {
     console.log('Attempting to send auto-reply to:', email);
     console.log('Resend instance created successfully');
     
-    // Send alien auto-reply
-    const autoReplyResult = await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: email,
-      subject: '👽 Transmission Received - [CLASSIFIED]',
+    // Send alien auto-reply (will work once domain is verified)
+    let autoReplyResult = null;
+    try {
+      autoReplyResult = await resend.emails.send({
+        from: 'onboarding@resend.dev',
+        to: email,
+        subject: '👽 Transmission Received - [CLASSIFIED]',
       html: `
         <div style="
           font-family: 'Courier New', monospace; 
@@ -68,14 +70,18 @@ export default async function handler(req, res) {
           </div>
         </div>
       `,
-    });
-    
-    console.log('Auto-reply result:', autoReplyResult);
+      });
+      
+      console.log('Auto-reply result:', autoReplyResult);
+    } catch (emailError) {
+      console.log('Auto-reply failed (expected until domain verified):', emailError.message);
+      autoReplyResult = { error: 'Domain not verified yet' };
+    }
 
     // Send notification to you (optional)
     const notificationResult = await resend.emails.send({
       from: 'onboarding@resend.dev',
-      to: 'alien@galaxy.nyc', // or your preferred notification email
+      to: 'ian@blockticity.io', // your verified email
       subject: `New Contact: ${name}`,
       html: `
         <h3>New Contact Form Submission</h3>
@@ -84,7 +90,7 @@ export default async function handler(req, res) {
         <p><strong>Message:</strong></p>
         <p>${message.replace(/\n/g, '<br>')}</p>
         <hr>
-        <p><em>Auto-reply sent successfully ✅</em></p>
+        <p><em>Auto-reply status: ${autoReplyResult?.error ? '❌ Failed (domain not verified)' : '✅ Sent successfully'}</em></p>
       `,
     });
 
