@@ -2,6 +2,12 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Debug logging
+console.log('Environment check:', {
+  hasKey: !!process.env.RESEND_API_KEY,
+  keyLength: process.env.RESEND_API_KEY ? process.env.RESEND_API_KEY.length : 0
+});
+
 export default async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
